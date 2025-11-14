@@ -1,0 +1,43 @@
+name: '🛡️ Architecture Validator'
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  validate_architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: '✅ Checkout Source Code'
+        uses: actions/checkout@v2
+
+      - name: '🔎 Verify deploy.yml exists'
+        run: |
+          if [ ! -f .github/workflows/deploy.yml ]; then
+            echo "❌ El archivo .github/workflows/deploy.yml no existe."
+            exit 1
+          fi
+          echo "✅ Archivo deploy.yml encontrado."
+
+      - name: '🔎 Validate Build Job'
+        run: |
+          grep -q "build:" .github/workflows/deploy.yml
+          echo "✅ Job 'build' encontrado."
+
+      - name: '🔎 Validate Deploy-Dev Job'
+        run: |
+          grep -q "deploy-dev:" .github/workflows/deploy.yml && \
+          grep -A 5 "deploy-dev:" .github/workflows/deploy.yml | grep -q "needs: build" && \
+          grep -A 5 "deploy-dev:" .github/workflows/deploy.yml | grep -q "environment: Dev"
+          echo "✅ Job 'deploy-dev' tiene 'needs: build' y 'environment: Dev'."
+
+      - name: '🔎 Validate Deploy-Prod Job'
+        run: |
+          grep -q "deploy-prod:" .github/workflows/deploy.yml && \
+          grep -A 5 "deploy-prod:" .github/workflows/deploy.yml | grep -q "needs: deploy-dev" && \
+          grep -A 5 "deploy-prod:" .github/workflows/deploy.yml | grep -q "environment: Production"
+          echo "✅ Job 'deploy-prod' tiene 'needs: deploy-dev' y 'environment: Production'."
+
+      - name: '🎉 Architecture validation passed'
+        run: echo "¡Excelente! La arquitectura del pipeline es correcta."
