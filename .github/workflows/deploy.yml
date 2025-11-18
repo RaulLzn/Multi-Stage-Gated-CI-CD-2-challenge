@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/Checkout@v3
+        uses: actions/checkout@v3
 
 
       - name: Simulate build
@@ -16,7 +16,7 @@ jobs:
 
   deploy-dev:
     needs: build
-    enviroment: Dev
+    environment: Dev
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Dev
