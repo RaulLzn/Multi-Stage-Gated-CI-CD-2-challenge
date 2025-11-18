@@ -1,0 +1,31 @@
+name: Pipeline de Despliegue
+
+on:
+  pull_request:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Simulación de build
+        run: echo "Construyendo y probando el proyecto..."
+
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Dev
+    steps:
+      - name: Despliegue en Dev
+        run: echo "Desplegando en el entorno de Desarrollo..."
+
+  deploy-prod:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Despliegue en Producción
+        run: echo "Desplegando en el entorno de Producción..."
