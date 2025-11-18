@@ -1,0 +1,31 @@
+name: Deploy-Pipeline
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/Checkout@v3
+
+
+      - name: Simulate build
+        run: echo "Building application..."
+
+  deploy-dev:
+    needs: build
+    enviroment: Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Dev
+        run: echo "Deploying to Dev..."
+  
+  deploy-prod: 
+    needs: deploy-dev 
+    environment: Production 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Deploy to Production 
+        run: echo "Deploying to Production..."
